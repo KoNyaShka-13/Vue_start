@@ -1,0 +1,80 @@
+<template>
+    <!--<div>
+        <div>
+            <button v-on:click="addLike">Like</button> Вешаем обработчик событий, есть два вида, они указаны-->
+            <!--<button @click="addDislike">Dislike</button> Указываем назавание функции в обработчике-->
+        <!--</div>
+
+        <div>Кол-во лайков: <strong>{{ likes }}</strong></div> Связываем показатель с параметром из объекта-->
+        <!--<div>Кол-во дизлайков: <strong>{{ dislikes }}</strong></div>
+    </div>-->
+    <!--Создаем форму для создания статей по шаблону-->
+    <form @submit.prevent><!--Один из способов отменить обычные действия браузера-->
+        <h4>Создание поста</h4><!--Баиндим, то есть связывем будущие значения наших инпутов с шаблоном тайтла и боди, для создания шаблонов-->
+        <input
+        v-model="post.title"
+        class="input" 
+        type="text" 
+        placeholder="Название"
+        > <!--@input нужен для того, чтобы введенная инфа в инпуут отображалась уже в консоли, байин связал консоль и инпут, изменения могли вноситься без ипута только со стороны консоли-->
+        <input 
+        v-model="post.body"
+        class="input" 
+        type="text" 
+        placeholder="Описание"
+        >
+        <button 
+        class="btn" 
+        @click="createPost"
+        >
+        Создать
+        </button>
+    </form>
+</template>
+
+<script>
+export default {
+    data() {//Тут будут изменяться дочерние элементы, чтобы не изменять в пропсах
+        return {
+            post: {
+                title: '',
+                body: ''
+            }
+        }
+    },
+    methods: {
+        createPost() {  
+            this.post.id = Date.now();
+            this.$emit('create', this.post)
+            this.post = {
+                title:  '',//Очищаем данные после залива
+                body:  ''
+            }
+            
+        }
+    }
+}
+</script>
+
+<style scoped>
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .input {
+        width: 100%;
+        border: 1px solid teal;
+        padding: 10px 15px;
+        margin: 10px 0 10px 0;
+    }
+
+    .btn {
+        align-self: flex-end;
+        padding: 10px 15px;
+        background: none;
+        color: teal;
+        border: 1px solid teal;
+        border-radius: 8%;
+    }
+</style>
