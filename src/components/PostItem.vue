@@ -1,0 +1,38 @@
+<template>
+    <div class="post"><!--Работа с массивом внутри шаблона-->
+        <div>
+            <div><strong>Название:</strong> {{ post.title }}</div><!--Создали шаблон для отображения массива-->
+            <div><strong>Описание:</strong> {{ post.body }}</div>
+        </div>
+    <div class="post__btns">
+        <my-button>Удалить</my-button>
+    </div>
+    </div>
+</template>
+
+<script>
+    import MyButton from "@/components/UI/MyButton";
+    export default {
+        components: {
+            MyButton
+        },
+        props: {
+            post: {
+                type: Object,
+                required: true,
+                
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    .post {
+        margin-bottom: 10px;
+        padding: 15px;
+        border: 2px solid teal;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+</style>

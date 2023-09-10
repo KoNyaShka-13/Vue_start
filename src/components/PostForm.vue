@@ -23,17 +23,21 @@
         type="text" 
         placeholder="Описание"
         >
-        <button 
-        class="btn" 
+        <my-button 
+        style="align-self: flex-end;"
         @click="createPost"
         >
         Создать
-        </button>
+        </my-button>
     </form>
 </template>
 
 <script>
+    import MyButton from "@/components/UI/MyButton";
 export default {
+    components: {
+        MyButton
+    },
     data() {//Тут будут изменяться дочерние элементы, чтобы не изменять в пропсах
         return {
             post: {
@@ -69,12 +73,5 @@ export default {
         margin: 10px 0 10px 0;
     }
 
-    .btn {
-        align-self: flex-end;
-        padding: 10px 15px;
-        background: none;
-        color: teal;
-        border: 1px solid teal;
-        border-radius: 8%;
-    }
+    
 </style>
