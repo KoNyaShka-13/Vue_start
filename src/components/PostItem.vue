@@ -4,9 +4,13 @@
             <div><strong>Название:</strong> {{ post.title }}</div><!--Создали шаблон для отображения массива-->
             <div><strong>Описание:</strong> {{ post.body }}</div>
         </div>
-    <div class="post__btns">
-        <my-button>Удалить</my-button>
-    </div>
+        <div class="post__btns">
+            <my-button
+            @click="$emit('remove', post)"
+            >
+            Удалить
+        </my-button>
+        </div>
     </div>
 </template>
 

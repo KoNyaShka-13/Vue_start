@@ -5,7 +5,7 @@
         /><!--Вставляем сюда инпуты-->
         <post-list 
         :posts="posts"
-        
+        @remove="removePost"
         />
     </div>
 </template>
@@ -24,8 +24,8 @@ export default {
         return {
             posts: [
                 {id: 1, title: 'Java Script', body: 'Описание поста'},
-                {id: 1, title: 'Java Script 2 часть', body: 'Описание поста номер 2'},
-                {id: 1, title: 'Java Script 3 часть', body: 'Описание поста номер 3'}
+                {id: 2, title: 'Java Script 2 часть', body: 'Описание поста номер 2'},
+                {id: 3, title: 'Java Script 3 часть', body: 'Описание поста номер 3'}
             ],
         }
     },
@@ -33,6 +33,9 @@ export default {
         createPost(post) {//Функция для нового поста
            this.posts.push(post);//Мы получили даные от дочернего элемента и отослали в массив
         },
+        removePost(post) {
+            this.posts = this.posts.filter(p => p.id !== post.id)//Перезаписываем, тем самым удаляем пост
+        }
 //        InputTitle(event) {//Указываем параметр
 //            this.title = event.target.value;//Мы модель синхронизируем с инпутом,чтобы данные из инпута отображались в консоли
 //        }//Один из вариантов синхронизации , если в инпуте для создания текста указатьдоп параметр  @input="InputTitle" 
