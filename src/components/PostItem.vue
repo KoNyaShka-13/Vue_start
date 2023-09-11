@@ -10,12 +10,8 @@
     </div>
 </template>
 
-<script>
-    import MyButton from "@/components/UI/MyButton";
+<script> 
     export default {
-        components: {
-            MyButton
-        },
         props: {
             post: {
                 type: Object,

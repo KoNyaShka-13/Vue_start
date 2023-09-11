@@ -11,18 +11,16 @@
     <!--Создаем форму для создания статей по шаблону-->
     <form @submit.prevent><!--Один из способов отменить обычные действия браузера-->
         <h4>Создание поста</h4><!--Баиндим, то есть связывем будущие значения наших инпутов с шаблоном тайтла и боди, для создания шаблонов-->
-        <input
+        <my-input
         v-model="post.title"
-        class="input" 
         type="text" 
         placeholder="Название"
-        > <!--@input нужен для того, чтобы введенная инфа в инпуут отображалась уже в консоли, байин связал консоль и инпут, изменения могли вноситься без ипута только со стороны консоли-->
-        <input 
+        /> <!--@input нужен для того, чтобы введенная инфа в инпуут отображалась уже в консоли, байин связал консоль и инпут, изменения могли вноситься без ипута только со стороны консоли-->
+        <my-input 
         v-model="post.body"
-        class="input" 
         type="text" 
         placeholder="Описание"
-        >
+        />
         <my-button 
         style="align-self: flex-end;"
         @click="createPost"
@@ -32,12 +30,8 @@
     </form>
 </template>
 
-<script>
-    import MyButton from "@/components/UI/MyButton";
+<script>  
 export default {
-    components: {
-        MyButton
-    },
     data() {//Тут будут изменяться дочерние элементы, чтобы не изменять в пропсах
         return {
             post: {
@@ -64,14 +58,5 @@ export default {
     form {
         display: flex;
         flex-direction: column;
-    }
-
-    .input {
-        width: 100%;
-        border: 1px solid teal;
-        padding: 10px 15px;
-        margin: 10px 0 10px 0;
-    }
-
-    
+    }   
 </style>
