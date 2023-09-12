@@ -58,5 +58,8 @@ export default {
     form {
         display: flex;
         flex-direction: column;
-    }   
+    } 
+    .btn {
+        margin-top: 15px;
+    }
 </style>

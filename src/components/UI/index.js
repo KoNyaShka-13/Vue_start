@@ -1,7 +1,9 @@
-import MyButton from "@/components/UI/MyButton";
+import MyButton from "@/components/UI/MyButton";//Импортируем файлы
 import MyInput from "@/components/UI/MyInput";
+import MyDialog from "@/components/UI/MyDialog";
 
-export default [
+export default [//Получаем файлы
     MyButton,
-    MyInput
+    MyInput,
+    MyDialog
 ]

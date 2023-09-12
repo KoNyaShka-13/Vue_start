@@ -28,11 +28,14 @@
 
 <style scoped>
     .post {
-        margin-bottom: 10px;
-        padding: 15px;
-        border: 2px solid teal;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+  padding: 15px;
+  border: 2px solid teal;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.post__btns {
+  display: flex;
+}
 </style>
