@@ -2,6 +2,11 @@
     <div class="app">
         <h1>Страница с постами</h1>
         <input type="text" v-model.trim="modificatorValue"><!--trim нужен для того, чтобы в модель не уходили пробелы-->
+        <my-button
+            @click="fetchPosts"
+        >
+        Получить посты
+        </my-button>
         <my-button 
             @click="showDialog"
             style="margin: 15px 0"
@@ -26,6 +31,7 @@
 import PostForm from "@/components/PostForm";//@ - это элиас, он сразу ссылается на папку src, это удобно при большом количестве папок и пложенности
 import PostList from "@/components/PostList";
 import MyDialog from "./components/UI/MyDialog.vue";
+import axios from 'axios';
 
 export default {
     components: {
@@ -34,11 +40,7 @@ export default {
 },
     data() {
         return {
-            posts: [
-                {id: 1, title: 'Java Script', body: 'Описание поста'},
-                {id: 2, title: 'Java Script 2 часть', body: 'Описание поста номер 2'},
-                {id: 3, title: 'Java Script 3 часть', body: 'Описание поста номер 3'},
-            ],
+            posts: [],
             dialogVisible: false,
             modificatorValue: ''
         }
@@ -53,7 +55,14 @@ export default {
         },
         showDialog() {
             this.dialogVisible = true; 
-    
+        },
+        async fetchPosts() {//Оборачиваем в try/catch код для отлавливания ошибок
+            try {
+                const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
+                this.posts = response.data;//Получаем посты за место тогго, чтобы их создавать
+            } catch (e) {
+                alert('ошибка')
+            }
         }
 //        InputTitle(event) {//Указываем параметр
 //            this.title = event.target.value;//Мы модель синхронизируем с инпутом,чтобы данные из инпута отображались в консоли
@@ -87,6 +96,7 @@ export default {
 
 .app {
     padding: 20px;
+    
 }
 
 
