@@ -1,5 +1,5 @@
 <template><!--Создаем сортировку-->
-    <select v-model="modelValue" @change="changeOption"><!--Двустороннее связывание-->
+    <select :value="modelValue" @change="changeOption"><!--Двустороннее связывание-->
         <option disabled value="">Выберите из списка</option><!---->
         <option 
           v-for="option in options" 
@@ -12,7 +12,7 @@
 </template>
   
   <script>
-  export default {
+  export default { 
     name: 'my-select',
     props: {
       modelValue: {
@@ -23,9 +23,9 @@
         default: () => []
       }
     },
-    methods: {
+    methods: {//
       changeOption(event) {
-        this.$emit('update:modelValue', event)
+        this.$emit('update:modelValue', event.target.value)
       }
     }
   }
