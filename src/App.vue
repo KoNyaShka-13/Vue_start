@@ -1,12 +1,6 @@
 <template> 
     <div class="app">
         <h1>Страница с постами</h1>
-        <input type="text" v-model.trim="modificatorValue"><!--trim нужен для того, чтобы в модель не уходили пробелы-->
-        <my-button
-            @click="fetchPosts"
-        >
-        Получить посты
-        </my-button>
         <my-button 
             @click="showDialog"
             style="margin: 15px 0"
@@ -14,14 +8,16 @@
             Создать пост
         </my-button>
         <my-dialog v-model:show="dialogVisible">
-        <post-form
-        @create="createPost"
-        /><!--Вставляем сюда инпуты-->
+            <post-form
+                @create="createPost"
+            /><!--Вставляем сюда инпуты-->
         </my-dialog>
         <post-list 
-        :posts="posts"
-        @remove="removePost"
+            :posts="posts"
+            @remove="removePost"
+            v-if="!isPostsLoading"
         />
+        <div v-else>Идет загрузка...</div>
     </div>
 </template>
 
@@ -42,7 +38,8 @@ export default {
         return {
             posts: [],
             dialogVisible: false,
-            modificatorValue: ''
+            //modificatorValue: ''//Зачем-то он тут стоял
+            isPostsLoading: false,// Нужен для отслеживания загрузки постов
         }
     },
     methods: {
@@ -58,15 +55,25 @@ export default {
         },
         async fetchPosts() {//Оборачиваем в try/catch код для отлавливания ошибок
             try {
-                const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
-                this.posts = response.data;//Получаем посты за место тогго, чтобы их создавать
+                this.isPostsLoading = true//Если тру, то загрузка начнется
+                setTimeout(async () => {//Устананвливаем таймер в 10000 милисекунд, только после этого будут загружаться посты
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
+                    this.posts = response.data;//Получаем посты за место тогго, чтобы их создавать
+                    this.isPostsLoading = false;//Данное условие нужно для тогго, чтобы слова 'Идет загрузка' исчезли, мы передаем параметр в пост-лист
+                }, 1000)
+                
             } catch (e) {
                 alert('ошибка')
+            } finally {
+                
             }
         }
 //        InputTitle(event) {//Указываем параметр
 //            this.title = event.target.value;//Мы модель синхронизируем с инпутом,чтобы данные из инпута отображались в консоли
 //        }//Один из вариантов синхронизации , если в инпуте для создания текста указатьдоп параметр  @input="InputTitle" 
+    }, 
+    mounted() {
+        this.fetchPosts();//Добавляем их, чтобы посты подгрузились сразу с обновление страницы
     }
 //    data() {
 //        return {
