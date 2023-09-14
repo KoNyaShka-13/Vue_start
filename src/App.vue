@@ -1,12 +1,17 @@
 <template> 
     <div class="app">
         <h1>Страница с постами</h1>
-        <my-button 
-            @click="showDialog"
-            style="margin: 15px 0"
-        >
-            Создать пост
-        </my-button>
+        <div class="app__btns">
+            <my-button 
+                @click="showDialog"  
+            >
+                Создать пост
+            </my-button>
+            <my-select
+                v-model="selectedSort"
+            />    
+        </div>
+        
         <my-dialog v-model:show="dialogVisible">
             <post-form
                 @create="createPost"
@@ -40,6 +45,7 @@ export default {
             dialogVisible: false,
             //modificatorValue: ''//Зачем-то он тут стоял
             isPostsLoading: false,// Нужен для отслеживания загрузки постов
+            selectedSort: ''
         }
     },
     methods: {
@@ -56,16 +62,14 @@ export default {
         async fetchPosts() {//Оборачиваем в try/catch код для отлавливания ошибок
             try {
                 this.isPostsLoading = true//Если тру, то загрузка начнется
-                setTimeout(async () => {//Устананвливаем таймер в 10000 милисекунд, только после этого будут загружаться посты
+                
                     const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
                     this.posts = response.data;//Получаем посты за место тогго, чтобы их создавать
-                    this.isPostsLoading = false;//Данное условие нужно для тогго, чтобы слова 'Идет загрузка' исчезли, мы передаем параметр в пост-лист
-                }, 1000)
-                
+            
             } catch (e) {
                 alert('ошибка')
             } finally {
-                
+                this.isPostsLoading = false;//Данное условие нужно для тогго, чтобы слова 'Идет загрузка' исчезли, мы передаем параметр в пост-лист
             }
         }
 //        InputTitle(event) {//Указываем параметр
@@ -104,6 +108,11 @@ export default {
 .app {
     padding: 20px;
     
+}
+.app__btns {
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
 }
 
 
