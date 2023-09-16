@@ -9,16 +9,16 @@
             </my-button>
             <my-select
                 v-model="selectedSort"
+                :options="sortOptions"
             />    
-        </div>
-        
+        </div>   
         <my-dialog v-model:show="dialogVisible">
             <post-form
                 @create="createPost"
             /><!--Вставляем сюда инпуты-->
         </my-dialog>
         <post-list 
-            :posts="posts"
+            :posts="sortedPosts"
             @remove="removePost"
             v-if="!isPostsLoading"
         />
@@ -45,7 +45,11 @@ export default {
             dialogVisible: false,
             //modificatorValue: ''//Зачем-то он тут стоял
             isPostsLoading: false,// Нужен для отслеживания загрузки постов
-            selectedSort: ''
+            selectedSort: '',
+            sortOptions: [
+                {value: 'title', name: 'По названию'},
+                {value: 'body', name: 'По содержимому'},
+            ]
         }
     },
     methods: {
@@ -78,7 +82,25 @@ export default {
     }, 
     mounted() {
         this.fetchPosts();//Добавляем их, чтобы посты подгрузились сразу с обновление страницы
-    }
+    },
+    computed: {//Здесь мы разворачиваем новый массив, который будет изменяться, то есть нужный массив без изменений остается
+        sortedPosts() {
+            return [...this.posts].sort((post1, post2) =>  post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]))
+                
+        }
+    },
+    //watch: {//Сравнивание, она мутирует всеь массив
+//        post: {
+//            handler(newVal) {
+//                console.log(newVal)
+//            },
+//            deep: true//Глубокое отслеживание, то есть любое изменение будет сразу отображаться, даже в массиве
+             //selectedSort(newValue) {
+             //   this.posts.sort((post1, post2) => {
+             //       return post1[newValue]?.localeCompare(post2[newValue])//Просто сравнивает две строки
+             //   })
+             //},
+            //}
 //    data() {
 //        return {
 //            likes: 0,
