@@ -87,7 +87,8 @@ export default {
         },
         changePage(pageNumber) {
             this.page = pageNumber;//какая страница, такой и номер страницы
-            this.fetchPosts();//В зависимости от номера страницы, будут подгружаться посты
+        //    this.fetchPosts();//В зависимости от номера страницы, будут подгружаться посты
+        //Убрали строчку выше, так как посты будут подгружаться при помощи обработчика watch, что находится ниже
         },
         async fetchPosts() {//Оборачиваем в try/catch код для отлавливания ошибок
             try {
@@ -124,6 +125,11 @@ export default {
             return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))//Приводим поиск к одному регистру при помощи toLowerCase()
         }
     },
+    watch: {//В данном случае именно wath будет отрабатывать 
+        page() {
+            this.fetchPosts()
+        }
+    }
     //watch: {//Сравнивание, она мутирует всеь массив
 //        post: {
 //            handler(newVal) {
