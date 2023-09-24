@@ -29,6 +29,18 @@
             v-if="!isPostsLoading"
         />
         <div v-else>Идет загрузка...</div>
+        <div class="page__wrapper">
+            <div v-for="pageNumber in totalPages" 
+            :key="pageNumber"
+            class="page"
+            :class="{
+                'current-page': page === pageNumber
+            }"
+            @click="changePage(pageNumber)"
+            >
+            {{ pageNumber }}
+        </div><!--В качестве ключа используется номер страницы-->
+        </div>
     </div>
 </template>
 
@@ -53,6 +65,9 @@ export default {
             isPostsLoading: false,// Нужен для отслеживания загрузки постов
             selectedSort: '',
             searchQuery: '',
+            page: 1,//Начальное количество страниц
+            limit: 10,//Лимит постов на одной странице
+            totalPages: 0,//Общее количество страниц, которое будет вычисляться ниже
             sortOptions: [
                 {value: 'title', name: 'По названию'},
                 {value: 'body', name: 'По содержимому'},
@@ -70,11 +85,21 @@ export default {
         showDialog() {
             this.dialogVisible = true; 
         },
+        changePage(pageNumber) {
+            this.page = pageNumber;//какая страница, такой и номер страницы
+            this.fetchPosts();//В зависимости от номера страницы, будут подгружаться посты
+        },
         async fetchPosts() {//Оборачиваем в try/catch код для отлавливания ошибок
             try {
                 this.isPostsLoading = true//Если тру, то загрузка начнется
                 
-                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+                        params: {
+                            _page: this.page,
+                            _limit: this.limit
+                        }
+                    });
+                    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
                     this.posts = response.data;//Получаем посты за место тогго, чтобы их создавать
             
             } catch (e) {
@@ -145,6 +170,18 @@ export default {
     margin: 15px 0;
     display: flex;
     justify-content: space-between;
+}
+
+.page__wrapper {
+    display: flex;
+    margin-top: 15px;
+}
+.page {
+    border: 1px solid black;
+    padding: 10px;
+}
+.current-page {
+    border: 2px solid teal;
 }
 
 
