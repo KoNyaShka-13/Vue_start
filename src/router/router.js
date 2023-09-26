@@ -1,6 +1,7 @@
 import Main from "@/pages/Main";
 import { createRouter, createWebHistory } from "vue-router";
-import PostPage from "@/pages/PostPage"
+import PostPage from "@/pages/PostPage";
+import About from "@/pages/About";
 //Реализация постраницной навигации реализована крайне просто, достаточно создать массив, состоящий из объектов, в которых будем описывать маршруты страницы
 const routes = [//Массив с маршрутами
     {
@@ -10,6 +11,10 @@ const routes = [//Массив с маршрутами
     {
         path: '/posts',
         component: PostPage
+    },
+    {
+        path: '/about',
+        component: About
     },
 ]
 

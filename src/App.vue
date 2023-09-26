@@ -1,17 +1,21 @@
 <template>
+    <navbar></navbar>
     <div class="app">
-         <router-view></router-view>
+        <router-view></router-view>
     </div>
  </template>
  
- <script>  
-     export default{
+<script>  
+    import Navbar from "@/components/UI/Navbar";
+    export default{
+        components: {
+            Navbar
+        }
+    }
+</script>
  
-     }
- </script>
- 
- <style scoped>
-     * {
+<style>
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -19,4 +23,4 @@
     .app {
         padding: 20px;    
     }
- </style>
+</style>
