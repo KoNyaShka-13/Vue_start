@@ -29,7 +29,9 @@
             v-if="!isPostsLoading"
         />
         <div v-else>Идет загрузка...</div>
-        <div class="page__wrapper">
+        <!--Определяем, долистал ли пользователь до конца страницы-->
+        <div ref="observer" class="observer"></div><!--Получаем доступ на прямую к ДОМ элементу, чтобы потом можно было показать observer за чем нужно следить, чтобы сработало автоматическое  добавление постов-->
+<!--        <div class="page__wrapper">
             <div v-for="pageNumber in totalPages" 
             :key="pageNumber"
             class="page"
@@ -39,8 +41,8 @@
             @click="changePage(pageNumber)"
             >
             {{ pageNumber }}
-        </div><!--В качестве ключа используется номер страницы-->
-        </div>
+        </div>--><!--В качестве ключа используется номер страницы-->
+<!--        </div>-->
     </div>
 </template>
 
@@ -85,11 +87,11 @@ export default {
         showDialog() {
             this.dialogVisible = true; 
         },
-        changePage(pageNumber) {
-            this.page = pageNumber;//какая страница, такой и номер страницы
-        //    this.fetchPosts();//В зависимости от номера страницы, будут подгружаться посты
-        //Убрали строчку выше, так как посты будут подгружаться при помощи обработчика watch, что находится ниже
-        },
+//        changePage(pageNumber) {
+//            this.page = pageNumber;//какая страница, такой и номер страницы
+//        //    this.fetchPosts();//В зависимости от номера страницы, будут подгружаться посты
+//        //Убрали строчку выше, так как посты будут подгружаться при помощи обработчика watch, что находится ниже
+//        },
         async fetchPosts() {//Оборачиваем в try/catch код для отлавливания ошибок
             try {
                 this.isPostsLoading = true//Если тру, то загрузка начнется
@@ -101,13 +103,33 @@ export default {
                         }
                     });
                     this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
-                    this.posts = response.data;//Получаем посты за место тогго, чтобы их создавать
+                    this.posts = response.data;//Получаем посты за место того, чтобы их создавать
             
             } catch (e) {
                 alert('ошибка')
             } finally {
                 this.isPostsLoading = false;//Данное условие нужно для тогго, чтобы слова 'Идет загрузка' исчезли, мы передаем параметр в пост-лист
             }
+        },
+
+        async loadMorePosts() {//Новая функция для подгрузки дополнительных постов на одной странице, когда закончилась определенная часть постов
+            try {
+                this.page +=1;
+//                this.isPostsLoading = true//Если тру, то загрузка начнется
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+                        params: {
+                            _page: this.page,
+                            _limit: this.limit
+                        }
+                    });
+                    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
+                    //Мы не перезаписываем посты, а добавляем еще данной функцией
+                    this.posts = [...this.posts, ...response.data];            
+            } catch (e) {
+                alert('ошибка')
+           } //finally {
+//                this.isPostsLoading = false;//Данное условие нужно для тогго, чтобы слова 'Идет загрузка' исчезли, мы передаем параметр в пост-лист
+//            }
         }
 //        InputTitle(event) {//Указываем параметр
 //            this.title = event.target.value;//Мы модель синхронизируем с инпутом,чтобы данные из инпута отображались в консоли
@@ -115,7 +137,20 @@ export default {
     }, 
     mounted() {
         this.fetchPosts();//Добавляем их, чтобы посты подгрузились сразу с обновление страницы
+        console.log(this.$refs.observer);//Чтобы получить на прямую ДОМ-элемент
+        let options = {
+            rootMargin: "0px",
+            threshold: 1.0,
+        };
+        let callback = (entries, observer) => {//Стрелочная функция нужна из-за того, что потерян контекст компонента
+            if (entries[0].isIntersecting && this.page < this.totalPages) {//Ставим ограничение по количесту страниц, чтобы потом дальше ничего не подгружалось, когда страницы с постами закончатся
+                this.loadMorePosts()
+            }
+        };
+        let observer = new IntersectionObserver(callback, options);
+        observer.observe(this.$refs.observer);//Говорим, за пересечением какого элемента производить действие, в моем случае - показ следующих постов
     },
+
     computed: {//Здесь мы разворачиваем новый массив, который будет изменяться, то есть нужный массив без изменений остается
         sortedPosts() {
             return [...this.posts].sort((post1, post2) =>  post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]))
@@ -125,10 +160,11 @@ export default {
             return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))//Приводим поиск к одному регистру при помощи toLowerCase()
         }
     },
+
     watch: {//В данном случае именно wath будет отрабатывать 
-        page() {
-            this.fetchPosts()
-        }
+//        page() {
+//            this.fetchPosts()
+//        }
     }
     //watch: {//Сравнивание, она мутирует всеь массив
 //        post: {
