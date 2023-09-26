@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App'
 import components from '@/components/UI';
+import router from './router/router';
 
 const app = createApp(App)
 
@@ -8,4 +9,6 @@ components.forEach(component => {//Регистрируем компоненты
     app.component(component.name, component)//Первым параметром передаем название компонента, а вторым параметром сам компонент
 })
 
-app.mount('#app');
+app
+    .use(router)
+    .mount('#app');
