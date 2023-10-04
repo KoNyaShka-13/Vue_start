@@ -28,7 +28,7 @@
         />
         <div v-else>Идет загрузка...</div>
         <!--Определяем, долистал ли пользователь до конца страницы-->
-        <div v-intersection class="observer"></div><!--Получаем доступ на прямую к ДОМ элементу, чтобы потом можно было показать observer за чем нужно следить, чтобы сработало автоматическое  добавление постов-->
+        <div v-intersection="{name: 'Оно работает!'}" class="observer"></div><!--Получаем доступ на прямую к ДОМ элементу, чтобы потом можно было показать observer за чем нужно следить, чтобы сработало автоматическое  добавление постов-->
 <!--        <div class="page__wrapper">
             <div v-for="pageNumber in totalPages" 
             :key="pageNumber"
@@ -135,17 +135,6 @@ export default {
     mounted() {
         this.fetchPosts();//Добавляем их, чтобы посты подгрузились сразу с обновление страницы
         console.log(this.$refs.observer);//Чтобы получить на прямую ДОМ-элемент
-//        const options = {
-//            rootMargin: "0px",
-//            threshold: 1.0,
-//        };
-//        const callback = (entries, observer) => {//Стрелочная функция нужна из-за того, что потерян контекст компонента
-//            if (entries[0].isIntersecting && this.page < this.totalPages) {//Ставим ограничение по количесту страниц, чтобы потом дальше ничего не подгружалось, когда страницы с постами закончатся
-//                this.loadMorePosts()
-//            }
-//        };
-//        const observer = new IntersectionObserver(callback, options);
-//       observer.observe(this.$refs.observer);//Говорим, за пересечением какого элемента производить действие, в моем случае - показ следующих постов
     },
 
     computed: {//Здесь мы разворачиваем новый массив, который будет изменяться, то есть нужный массив без изменений остается

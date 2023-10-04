@@ -1,6 +1,17 @@
 //Директивы всегда начинаются на V и следущую заглавную букву имени
 export default {
-    mounted(el) {
-        console.log(el);
-    }
+    mounted(el, binding) {
+        const options = {//Данная часть кода отвечает за отслеживание пересечения определенного элемента
+            rootMargin: '0px',
+            threshold: 1.0,
+        };
+        const callback = (entries, observer) => {//Стрелочная функция нужна из-за того, что потерян контекст компонента
+            if (entries[0].isIntersecting) {//Ставим ограничение по количесту страниц, чтобы потом дальше ничего не подгружалось, когда страницы с постами закончатся
+                binding.value()
+            }
+        };
+        const observer = new IntersectionObserver(callback, options);
+       observer.observe(el);//Говорим, за пересечением какого элемента производить действие, в моем случае - показ следующих постов
+    },
+    name: 'intersection'//Пишем название диррективы, по которому будем находить ее
 }
