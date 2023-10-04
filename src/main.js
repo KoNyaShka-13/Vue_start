@@ -12,7 +12,7 @@ components.forEach(component => {//Регистрируем компоненты
 })
 
 directives.forEach(directive => {
-    app.directive(directive.name, VIntersection)//Просто указываем, что мы будем доставать данные из диррективы, но не указываем ее
+    app.directive(directive.name, directive)//Просто указываем, что мы будем доставать данные из диррективы, но не указываем ее
 })
 
 //app.directive('intersection', VIntersection)//Указываем название и документ

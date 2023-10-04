@@ -1,4 +1,4 @@
-import VFocus from "@/directives/VFocus";//Я не знаю, почему такой путь, просто надо запомнить
+import VFocus from "@/directives/VFocus";
 import VIntersection from "@/directives/VIntersection";
 
 export default[

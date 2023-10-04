@@ -9,19 +9,11 @@
 </template>
 
 <script>
+import toggleMixin from '@/mixins/toggleMixin';
+
 export default{
     name: 'my-dialog',
-    props: {//Будет иметь булиновое значение, если будет тру, то будет показываться
-        show: {
-            type: Boolean,
-            default: false
-        }
-    },
-    methods: {
-        hideDialog() {
-            this.$emit('update:show',)
-        }
-    }
+    mixins: [toggleMixin]
 }
     
 </script>
