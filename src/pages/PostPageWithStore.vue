@@ -1,15 +1,16 @@
 <template> 
     <div>
-        <h1>{{ $store.state.isAuth ? "Пользователь авторизован" : "Авторизуйтесь, чтобы использовать сервис" }}</h1><!--Знак вопроса это булиновое значение, тру или фолз, исходя из этого будет выбран один из вариантов, что прописаны через двоеточие-->
-        <h1>{{ $store.getters.doubleLikes }}</h1>
+<!--       <h1>{{ $store.state.isAuth ? "Пользователь авторизован" : "Авторизуйтесь, чтобы использовать сервис" }}</h1>--><!--Знак вопроса это булиновое значение, тру или фолз, исходя из этого будет выбран один из вариантов, что прописаны через двоеточие-->
+<!--       <h1>{{ $store.getters.doubleLikes }}</h1>
         <div class="btns">
             <my-button @click="$store.commit('incrementLikes')">+ лайк</my-button>
             <my-button @click="$store.commit('decrementLikes')">- лайк</my-button>
-        </div>
+        </div> -->
         <h1>Страница с постами</h1>
         <my-input
             v-focus
-            v-model="searchQuery"
+            :model-value="searchQuery"
+            @update:model-value="setSearchQuery"
             placeholder="Поиск......."
         />
         <div class="app__btns">
@@ -19,9 +20,10 @@
                 Создать пост
             </my-button>
             <my-select
-                v-model="selectedSort"
+                model-value="selectedSort"
+                @update:model-value="setSelectedSort"
                 :options="sortOptions"
-            />    
+            />   
         </div>   
         <my-dialog v-model:show="dialogVisible">
             <post-form
@@ -57,6 +59,9 @@ import PostForm from "@/components/PostForm";//@ - это элиас, он ср�
 import PostList from "@/components/PostList";
 import MyDialog from "@/components/UI/MyDialog.vue";
 import axios from 'axios';
+import MySelect from "@/components/UI/MySelect";
+import MyInput from "@/components/UI/MyInput";
+import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
 
 export default {
     components: {
@@ -65,22 +70,31 @@ export default {
 },
     data() {
         return {
-            posts: [],
+//            posts: [],
             dialogVisible: false,
-            //modificatorValue: ''//Зачем-то он тут стоял
-            isPostsLoading: false,// Нужен для отслеживания загрузки постов
-            selectedSort: '',
-            searchQuery: '',
-            page: 1,//Начальное количество страниц
-            limit: 10,//Лимит постов на одной странице
-            totalPages: 0,//Общее количество страниц, которое будет вычисляться ниже
-            sortOptions: [
-                {value: 'title', name: 'По названию'},
-                {value: 'body', name: 'По содержимому'},
-            ]
+//            //modificatorValue: ''//Зачем-то он тут стоял
+//            isPostsLoading: false,// Нужен для отслеживания загрузки постов
+//            selectedSort: '',
+//            searchQuery: '',
+//            page: 1,//Начальное количество страниц
+//            limit: 10,//Лимит постов на одной странице
+//            totalPages: 0,//Общее количество страниц, которое будет вычисляться ниже
+//            sortOptions: [
+//                {value: 'title', name: 'По названию'},
+//                {value: 'body', name: 'По содержимому'},
+//            ]
         }
     },
     methods: {
+        ...mapMutations({//Изменение номера страницы
+            setPage: 'post/setPage',
+            setSearchQuery: 'post/setSearchQuery',
+            setSelectedSort: 'post/setSelectedSort'
+        }),
+        ...mapActions({
+            loadMorePosts: 'post/loadMorePosts',
+            fetchhPosts: 'post/fetchPosts',
+        }),
         createPost(post) {//Функция для нового поста
            this.posts.push(post);//Мы получили даные от дочернего элемента и отослали в массив
             this.dialogVisible = false;//После создания поста, окно закроется
@@ -96,62 +110,72 @@ export default {
 //        //    this.fetchPosts();//В зависимости от номера страницы, будут подгружаться посты
 //        //Убрали строчку выше, так как посты будут подгружаться при помощи обработчика watch, что находится ниже
 //        },
-        async fetchPosts() {//Оборачиваем в try/catch код для отлавливания ошибок
-            try {
-                this.isPostsLoading = true//Если тру, то загрузка начнется
-                
-                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-                        params: {
-                            _page: this.page,
-                            _limit: this.limit
-                        }
-                    });
-                    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
-                    this.posts = response.data;//Получаем посты за место того, чтобы их создавать
-            
-            } catch (e) {
-                alert('ошибка')
-            } finally {
-                this.isPostsLoading = false;//Данное условие нужно для тогго, чтобы слова 'Идет загрузка' исчезли, мы передаем параметр в пост-лист
-            }
-        },
 
-        async loadMorePosts() {//Новая функция для подгрузки дополнительных постов на одной странице, когда закончилась определенная часть постов
-            try {
-                this.page +=1;
+//        async fetchPosts() {//Оборачиваем в try/catch код для отлавливания ошибок
+//            try {
 //                this.isPostsLoading = true//Если тру, то загрузка начнется
-                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-                        params: {
-                            _page: this.page,
-                            _limit: this.limit
-                        }
-                    });
-                    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
-                    //Мы не перезаписываем посты, а добавляем еще данной функцией
-                    this.posts = [...this.posts, ...response.data];            
-            } catch (e) {
-                alert('ошибка')
-           } //finally {
+//                
+//                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+//                        params: {
+//                            _page: this.page,
+//                            _limit: this.limit
+//                        }
+//                    });
+//                    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
+//                    this.posts = response.data;//Получаем посты за место того, чтобы их создавать
+//            
+//            } catch (e) {
+//                alert('ошибка')
+//            } finally {
 //                this.isPostsLoading = false;//Данное условие нужно для тогго, чтобы слова 'Идет загрузка' исчезли, мы передаем параметр в пост-лист
 //            }
-        }
-//        InputTitle(event) {//Указываем параметр
-//            this.title = event.target.value;//Мы модель синхронизируем с инпутом,чтобы данные из инпута отображались в консоли
-//        }//Один из вариантов синхронизации , если в инпуте для создания текста указатьдоп параметр  @input="InputTitle" 
+//        },
+//
+//        async loadMorePosts() {//Новая функция для подгрузки дополнительных постов на одной странице, когда закончилась определенная часть постов
+//            try {
+
+////                this.page +=1;
+
+//                this.isPostsLoading = true//Если тру, то загрузка начнется
+//                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+//                        params: {
+//                            _page: this.page,
+//                            _limit: this.limit
+//                        }
+//                    });
+//                    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit)
+//                    //Мы не перезаписываем посты, а добавляем еще данной функцией
+//                    this.posts = [...this.posts, ...response.data];            
+//            } catch (e) {
+//                alert('ошибка')
+//           } //finally {
+// //               this.isPostsLoading = false;//Данное условие нужно для тогго, чтобы слова 'Идет загрузка' исчезли, мы передаем параметр в пост-лист
+// //           }
+//        }
+////        InputTitle(event) {//Указываем параметр
+////            this.title = event.target.value;//Мы модель синхронизируем с инпутом,чтобы данные из инпута отображались в консоли
+////        }//Один из вариантов синхронизации , если в инпуте для создания текста указатьдоп параметр  @input="InputTitle" 
     }, 
     mounted() {
-        this.fetchPosts();//Добавляем их, чтобы посты подгрузились сразу с обновление страницы
+    //    this.fetchPosts();//Добавляем их, чтобы посты подгрузились сразу с обновление страницы
         //console.log(this.$refs.observer);//Чтобы получить на прямую ДОМ-элемент
     },
 
     computed: {//Здесь мы разворачиваем новый массив, который будет изменяться, то есть нужный массив без изменений остается
-        sortedPosts() {
-            return [...this.posts].sort((post1, post2) =>  post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]))
-                
-        },
-        sortedAndSearchedPosts() {
-            return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))//Приводим поиск к одному регистру при помощи toLowerCase()
-        }
+        ...mapState({
+        posts: state => state.post.posts,
+        isPostsLoading: state => state.post.isPostsLoading,
+        selectedSort: state => state.post.selectedSort,
+        searchQuery: state => state.post.searchQuery,
+        page: state => state.post.page,
+        limit: state => state.post.limit,
+        totalPages: state => state.post.totalPages,
+        sortOptions: state => state.post.sortOptions
+        }),
+        ...mapGetters({
+            sortedPosts: 'post/sortedPosts',
+            sortedAndSearchedPosts: 'post/sortedAndSearchedPosts',
+        })
     },
 
     watch: {//В данном случае именно wath будет отрабатывать 
