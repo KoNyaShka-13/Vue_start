@@ -4,6 +4,7 @@ import PostPage from "@/pages/PostPage";
 import About from "@/pages/About";
 import PostIdPage from "@/pages/PostIdPage";
 import PostPageWithStore from "@/pages/PostPageWithStore";
+import PostPageCompositionApi from "@/pages/PostPageCompositionApi";
 //Реализация постраницной навигации реализована крайне просто, достаточно создать массив, состоящий из объектов, в которых будем описывать маршруты страницы
 const routes = [//Массив с маршрутами
     {
@@ -25,6 +26,10 @@ const routes = [//Массив с маршрутами
     {
         path: '/store',
         component: PostPageWithStore
+    },
+    {
+        path: '/composition',
+        component: PostPageCompositionApi
     },
     
 ]

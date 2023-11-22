@@ -49,8 +49,11 @@
 //Импортируем остальные части кода
 import PostForm from "@/components/PostForm";//@ - это элиас, он сразу ссылается на папку src, это удобно при большом количестве папок и пложенности
 import PostList from "@/components/PostList";
-import MyDialog from "@/components/UI/MyDialog.vue";
+import MyDialog from "@/components/UI/MyDialog";
+import MyButton from "@/components/UI/MyButton";
 import axios from 'axios';
+import MySelect from "@/components/UI/MySelect";
+import MyInput from "@/components/UI/MyInput";
 
 export default {
     components: {

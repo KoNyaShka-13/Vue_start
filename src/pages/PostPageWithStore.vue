@@ -18,7 +18,7 @@
                 @click="showDialog"  
             >
                 Создать пост
-            </my-button>
+            </my-button> 
             <my-select
                 model-value="selectedSort"
                 @update:model-value="setSelectedSort"
@@ -57,7 +57,8 @@
 //Импортируем остальные части кода
 import PostForm from "@/components/PostForm";//@ - это элиас, он сразу ссылается на папку src, это удобно при большом количестве папок и пложенности
 import PostList from "@/components/PostList";
-import MyDialog from "@/components/UI/MyDialog.vue";
+import MyDialog from "@/components/UI/MyDialog";
+import MyButton from "@/components/UI/MyButton";
 import axios from 'axios';
 import MySelect from "@/components/UI/MySelect";
 import MyInput from "@/components/UI/MyInput";
@@ -157,6 +158,7 @@ export default {
 ////        }//Один из вариантов синхронизации , если в инпуте для создания текста указатьдоп параметр  @input="InputTitle" 
     }, 
     mounted() {
+        this.fetchhPosts();
     //    this.fetchPosts();//Добавляем их, чтобы посты подгрузились сразу с обновление страницы
         //console.log(this.$refs.observer);//Чтобы получить на прямую ДОМ-элемент
     },
